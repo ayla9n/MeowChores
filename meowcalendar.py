@@ -11,7 +11,7 @@ num_days = 30
 #CHORE ROTATION 
 dates = [start_date + timedelta(days=i) for i in range(num_days)]
 assignments = [siblings[i % len(siblings)] for i in range(num_days)]
-chore_df = pd.DataFrame({"Date": dates, "Assigned To": assignments})
+chore_df = pd.DataFrame({"Date": dates, "Next up": assignments})
 
 #adding photos
 catwashing = Image.open("cat pics/justwashingthedishes.jpg")
@@ -29,7 +29,7 @@ st.markdown(f"### Today: **{today.strftime('%A, %B %d')}**")
 # Converting DataFrame dates to date 
 chore_df['Date'] = pd.to_datetime(chore_df['Date']).dt.date
 
-today_person = chore_df.loc[chore_df['Date'] == today, 'Assigned To']
+today_person = chore_df.loc[chore_df['Date'] == today, 'Next up']
 
 if not today_person.empty:
     st.subheader(f"⭐ {today_person.values[0]}'s Idda day!")
@@ -38,7 +38,7 @@ else:
 
 # Tomorrow 
 tomorrow = today + timedelta(days=1)
-tomorrow_person = chore_df.loc[chore_df['Date'] == tomorrow, 'Assigned To']
+tomorrow_person = chore_df.loc[chore_df['Date'] == tomorrow, 'Next up']
 
 if not tomorrow_person.empty:
     st.info(f"Tomorrow: {tomorrow_person.values[0]}'s Idda day!")
@@ -46,12 +46,25 @@ if not tomorrow_person.empty:
 
 info_col, img_col = st.columns(2)
 
+#edit #
+talaja = ["powderblue 🟦", "AYla 🐱",  "Pixie 🧚🏾","Acai 🫐" ]
+last_to_clean = 1  #change index here
+
 with info_col:
      # calendar table
-    st.dataframe(chore_df.set_index("Date"), use_container_width=True)
+    st.dataframe(chore_df.set_index("Date").head(6)[1:], use_container_width=True)
+
+    st.divider()
+
+    st.subheader("❄️Talaja Day")
+    st.info(f'{talaja[last_to_clean]} was the last person to clean the fridge')
+    next_up = talaja[last_to_clean+1:]  + talaja[:last_to_clean]
+    next_up_df = pd.DataFrame({'Next up': next_up})
+    st.dataframe(next_up_df, use_container_width=True)
+
     
 with img_col:
-    st.image(catmop, caption="you in a little bit",)
+   st.image(catwashing, caption="you in a little bit")
 
 
 st.divider()
@@ -65,7 +78,7 @@ with col1:
     st.markdown("""
     Quick reminders to keep the kitchen clean:
                 
-    - 🍽️ **Place clean plates on the dish rack** (don’t leave them near the sink!).
+    - 🍽️ **Place clean plates on the dish rack** (don’t leave them near the sink! & put thrm away later).
     - 🧴 **Wipe down counters**.
     - ♨️ **Scrub and wipe the stove**.    
     - 🧹 **Sweep the kitchen floor**.
@@ -75,18 +88,7 @@ with col1:
     """)
 
 with col2:
-    st.image(catwashing, caption="meow")
-
-
-st.divider()
-
-talaja = ["powderblue 🟦", "AYla 🐱",  "Pixie 🧚🏾","Acai 🫐" ]
-last_to_clean = 1  #change index here
-st.subheader("❄️Talaja Day")
-st.info(f'{talaja[last_to_clean]} was the last person to clean the fridge')
-next_up = talaja[last_to_clean+1:]  + talaja[:last_to_clean]
-next_up_df = pd.DataFrame({'Next up': next_up})
-st.dataframe(next_up_df, use_container_width=True)
+    st.image(catmop, caption="also you in a little bit")
 
 
     
@@ -95,7 +97,7 @@ st.divider()
 # date lookup
 st.markdown("### 🔎 Check who has chores on a specific day")
 selected_date = st.date_input("Pick a date", today)
-chosen = chore_df.loc[chore_df['Date'] == selected_date, 'Assigned To']
+chosen = chore_df.loc[chore_df['Date'] == selected_date, 'Next up']
 if not chosen.empty:
     st.info(f"{chosen.values[0]} is assigned on {selected_date.strftime('%A, %B %d')}.")
 else:
