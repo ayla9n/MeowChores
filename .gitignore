@@ -1,2 +1,6 @@
 # --- Personal / Test files ---
 chores.py
+
+
+# ---- Cache files ---
+__pycache__/
