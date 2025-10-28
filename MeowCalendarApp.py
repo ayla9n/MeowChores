@@ -12,6 +12,7 @@ class ChoreCalendar:
         self.num_days = num_days
         self.df = self._create_chore_df()
 
+    "rotates chores daily based on thr order of the list"
     def _create_chore_df(self):
         dates = [self.start_date + timedelta(days=i) for i in range(self.num_days)]
         assignments = [self.person[i % len(self.person)] for i in range(self.num_days)]
