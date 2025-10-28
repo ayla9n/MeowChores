@@ -3,15 +3,15 @@ from datetime import date, timedelta
 
 
 class ChoreCalendar:
-    def __init__(self, siblings, start_date, num_days):
-        self.siblings = siblings
+    def __init__(self, person, start_date, num_days):
+        self.person = person
         self.start_date = start_date
         self.num_days = num_days
         self.df = self._create_chore_df()
 
     def _create_chore_df(self):
         dates = [self.start_date + timedelta(days=i) for i in range(self.num_days)]
-        assignments = [self.siblings[i % len(self.siblings)] for i in range(self.num_days)]
+        assignments = [self.person[i % len(self.person)] for i in range(self.num_days)]
         df = pd.DataFrame({"Date": dates, "Next up": assignments})
         df["Date"] = pd.to_datetime(df["Date"]).dt.date
         return df

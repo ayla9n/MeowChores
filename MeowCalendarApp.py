@@ -6,15 +6,15 @@ import pytz
 
 
 class ChoreCalendar:
-    def __init__(self, siblings, start_date, num_days):
-        self.siblings = siblings
+    def __init__(self, person, start_date, num_days):
+        self.person = person
         self.start_date = start_date
         self.num_days = num_days
         self.df = self._create_chore_df()
 
     def _create_chore_df(self):
         dates = [self.start_date + timedelta(days=i) for i in range(self.num_days)]
-        assignments = [self.siblings[i % len(self.siblings)] for i in range(self.num_days)]
+        assignments = [self.person[i % len(self.person)] for i in range(self.num_days)]
         df = pd.DataFrame({"Date": dates, "Next up": assignments})
         df["Date"] = pd.to_datetime(df["Date"]).dt.date
         return df
@@ -45,11 +45,11 @@ st.image(cat_pic, width=100)
 st.title(f"Chore Calendar")
 st.write("Automatically rotates chores every day.")
 
-siblings = ["papAYA 🥭", "AYla 🐱", "Acai 🫐", "powderblue 🟦", "hellenKeller ⛳", "Pixie 🧚🏾"]
-calendar = ChoreCalendar(siblings, date(2025, 10, 24), 30)
+person = ["papAYA 🥭", "AYla 🐱", "Acai 🫐", "powderblue 🟦", "Tah ⛳", "Pixie 🧚🏾"]
+calendar = ChoreCalendar(person, date(2025, 10, 24), 30)
 
 # Dates
-# Define your local timezone
+# local timezone
 tz = pytz.timezone("America/New_York")
 
 # Get today's date in your timezone
@@ -62,30 +62,31 @@ tomorrow_person = calendar.get_person_for_date(tomorrow)
 
 if today_person:
     st.write(f"\n{today.strftime("%A %B %d, %Y")}")
-    st.subheader(f"⭐ Today is {today_person}'s Idda day!")
+    st.subheader(f"⭐ Today is {today_person}'s dishes day!")
 else:
     st.warning("No one assigned for today.")
 
 if tomorrow_person:
-    st.info(f"Tomorrow: {tomorrow_person}'s Idda day!")
+    st.info(f"Tomorrow: {tomorrow_person}'s dishes day!")
 
 # Data
 info_col, img_col = st.columns(2)
 catwashing = Image.open("cat pics/justwashingthedishes.jpg")
 catmop = Image.open("cat pics/meowmop.jpg")
 sage = Image.open("cat pics/valsage.jpg")
+catface =  Image.open("cat pics/catface.jpg")
 
 day_df = calendar.get_day_df()
 tomorrow_index = calendar.get_index_for_person(tomorrow_person)
 
 with info_col:
-    #displays all siblings excluding the sbling who's washing day is today
-    st.dataframe(day_df.set_index("Day").iloc[tomorrow_index:tomorrow_index + len(siblings) - 1], use_container_width=True)
+    #displays all people excluding the person who's washing day is today
+    st.dataframe(day_df.set_index("Day").iloc[tomorrow_index:tomorrow_index + len(person) - 1], use_container_width=True)
  
 
 
 with img_col:
-    st.image(sage, caption="you rn", width=250)
+    st.image(catwashing, caption="you in a little bit", width=250)
     
 st.divider()
 
@@ -102,7 +103,7 @@ with tips_col:
     """)
 
 with catmop_col:
-    st.image(catwashing, caption="you in a little bit", width=250)
+    st.image(catmop, caption="also you in a little bit", width=250)
 
 st.divider()
 
@@ -112,11 +113,11 @@ with col1:
     talaja = ["powderblue 🟦", "AYla 🐱", "Pixie 🧚🏾", "Acai 🫐"]
     last_to_clean = 1
     next_up = talaja[last_to_clean + 1:] + talaja[:last_to_clean]
-    st.subheader("❄️ Talaja Day")
+    st.subheader("❄️ Fridge Day")
     st.info(f"{talaja[last_to_clean]} was the last person to clean the fridge")
     st.dataframe(pd.DataFrame({'Next up': next_up}), use_container_width=True)
 
 with col2:
-    st.image(catmop, caption="also you in a little bit", width=250)
+    st.image(catface)
 
 st.divider()
