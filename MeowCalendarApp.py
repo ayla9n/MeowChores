@@ -34,6 +34,12 @@ class ChoreCalendar:
 
 cat_pic = Image.open("cat pics/meow.png")
 
+st.set_page_config(
+    page_title="Meowchores",
+    page_icon='🐾',
+    layout="centered"
+)
+
 st.image(cat_pic, width=100)
 #--- App-----
 st.title(f"Chore Calendar")
