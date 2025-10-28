@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
-from datetime import date, timedelta
-from PIL import Image 
+from datetime import date, timedelta, datetime
+from PIL import Image
+import pytz
 
 
 class ChoreCalendar:
@@ -31,16 +32,23 @@ class ChoreCalendar:
         return self.df.index[self.df["Next up"] == person][0] if person in self.df["Next up"].values else 0
 
 
+cat_pic = Image.open("cat pics/meow.png")
 
+st.image(cat_pic, width=100)
 #--- App-----
-st.title("🏡 Chore Calendar")
+st.title(f"Chore Calendar")
 st.write("Automatically rotates chores every day.")
 
 siblings = ["papAYA 🥭", "AYla 🐱", "Acai 🫐", "powderblue 🟦", "hellenKeller ⛳", "Pixie 🧚🏾"]
 calendar = ChoreCalendar(siblings, date(2025, 10, 24), 30)
 
 # Dates
-today = date.today()
+# Define your local timezone
+tz = pytz.timezone("America/New_York")
+
+# Get today's date in your timezone
+today = datetime.now(tz).date()
+#today = date.today()
 tomorrow = today + timedelta(days=1)
 
 today_person = calendar.get_person_for_date(today)
@@ -67,8 +75,17 @@ tomorrow_index = calendar.get_index_for_person(tomorrow_person)
 with info_col:
     #displays all siblings excluding the sbling who's washing day is today
     st.dataframe(day_df.set_index("Day").iloc[tomorrow_index:tomorrow_index + len(siblings) - 1], use_container_width=True)
-    st.divider()
+ 
 
+
+with img_col:
+    st.image(sage, caption="you rn", width=250)
+    
+st.divider()
+
+tips_col, catmop_col = st.columns(2)
+
+with tips_col:
     st.subheader("Kitchen Reminders")
     st.markdown("""
     - 🍽️ Place clean plates on the dish rack  
@@ -78,8 +95,7 @@ with info_col:
     - 🚮 Take out the garbage if it's full  
     """)
 
-with img_col:
-    st.image(sage, caption="you rn", width=250)
+with catmop_col:
     st.image(catwashing, caption="you in a little bit", width=250)
 
 st.divider()
@@ -95,6 +111,6 @@ with col1:
     st.dataframe(pd.DataFrame({'Next up': next_up}), use_container_width=True)
 
 with col2:
-    st.image(catmop, caption="also you in a little bit")
+    st.image(catmop, caption="also you in a little bit", width=250)
 
 st.divider()
